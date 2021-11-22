@@ -21,7 +21,7 @@ defmodule HTTPClient.MixProject do
 
   defp deps do
     [
-      {:httpoison, "~> 1.6"},
+      {:httpoison, "~> 1.8"},
 
       # Testing
       {:mox, "~> 1.0", only: :test},
