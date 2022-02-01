@@ -29,7 +29,7 @@ defmodule HTTPClient do
     case @http_adapter.get(url, headers, opts) do
       {:ok, data} -> format_data(data)
       {:error, %HTTPoison.Error{reason: {:max_redirect_overflow, {:ok, 302, headers, settings}}}} ->
-        {:error, %{body: "", headers: headers, status: 302}}
+        {:error, %{body: "", headers: to_map(headers), status: 302}}
       {:error, %HTTPoison.Error{reason: reason} = error} ->
         IO.inspect error
         {:error, reason}
@@ -92,7 +92,6 @@ defmodule HTTPClient do
     {:ok, %{body: body, headers: to_map(headers), status: status}}
   end
 
-  defp to_map(list) do
-    Enum.into(list, %{})
-  end
+  defp to_map(list), do: Enum.into(list, %{})
+
 end
