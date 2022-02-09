@@ -28,7 +28,7 @@ defmodule HTTPClient do
 
     case @http_adapter.get(url, headers, opts) do
       {:ok, data} -> format_data(data)
-      {:error, %HTTPoison.Error{reason: {:max_redirect_overflow, {:ok, 302, headers, settings}}}} ->
+      {:error, %HTTPoison.Error{reason: {:max_redirect_overflow, {:ok, 302, headers, _settings}}}} ->
         {:error, %{body: "", headers: to_map(headers), status: 302}}
       {:error, %HTTPoison.Error{reason: reason} = error} ->
         IO.inspect error
