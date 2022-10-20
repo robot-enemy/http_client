@@ -10,7 +10,7 @@ defmodule HTTPClient do
     recv_timeout: 5_000,
     timeout: 5_000,
   ]
-  @http_adapter Application.get_env(:http_client, :http_adapter, HTTPoison)
+  @http_adapter Application.compile_env(:http_client, :http_adapter, HTTPoison)
 
   @doc """
   Performs a GET request on the given URL.
