@@ -85,6 +85,33 @@ defmodule HTTPClient do
     end
   end
 
+  @doc """
+  Executes a given request.
+
+  ## Examples
+
+      iex> HTTPClient.request(%{method: :get, url: "http://www.example.com"})
+      {:ok, _content}
+
+  """
+  @impl HTTPClient.Behaviour
+
+  def request(%{options: options} = request) do
+    request =
+      Map.merge(request, %{
+        options: Keyword.merge(@default_opts, options),
+      })
+
+    case @http_adapter.request(request) do
+      {:ok, data} -> format_data(data)
+      {:error, %HTTPoison.Error{reason: reason}} -> {:error, reason}
+    end
+  end
+
+  ##
+  # Private
+  ##
+
   defp format_data(%{status_code: 403}), do: {:error, :unauthorized}
   defp format_data(%{status_code: 404}), do: {:error, :not_found}
   defp format_data(%{body: body, headers: headers, status_code: status}) do

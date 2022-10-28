@@ -12,7 +12,7 @@ defmodule HTTPClientTest do
 
   describe "get/3" do
 
-    test "when given a valid attributes, returns the content from http" do
+    test "when given a valid attributes, returns the fetched data" do
       url     = "https://www.example.com"
 
       expect(HTTPoisonMock, :get, fn ^url, @headers, _opts ->
@@ -37,8 +37,8 @@ defmodule HTTPClientTest do
 
   describe "post/4" do
 
-    test "when given valid attributes, returns the content from http" do
-      url     = "https://www.example.com"
+    test "when given valid attributes, returns the fetched data" do
+      url = "https://www.example.com"
 
       expect(HTTPoisonMock, :post, fn ^url, @payload, @headers, _opts ->
         {:ok, %HTTPoison.Response{body: @data, status_code: 200}}
@@ -56,6 +56,41 @@ defmodule HTTPClientTest do
       end)
 
       assert {:error, :not_found} = HTTPClient.post(url, @payload, @headers)
+    end
+
+  end
+
+  describe "request/1" do
+
+    test "when given a valid request, returns the fetched data" do
+      request = %{
+        body: "",
+        headers: [],
+        method: :get,
+        options: [],
+        url: "https://www.example.com",
+      }
+
+      expect(HTTPoisonMock, :request, fn _request ->
+        {:ok, %HTTPoison.Response{body: "test", status_code: 200}}
+      end)
+
+      assert {:ok, %{body: "test", headers: %{}, status: 200}}
+               = HTTPClient.request(request)
+    end
+
+    test "when given invalid attributes, returns an error" do
+      request = %{
+        method: :get,
+        options: [],
+        url: "https://www.example.com/non-existent",
+      }
+
+      expect(HTTPoisonMock, :request, fn _request ->
+        {:ok, %{body: "", status_code: 404}}
+      end)
+
+      assert {:error, :not_found} = HTTPClient.request(request)
     end
 
   end
