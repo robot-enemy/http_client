@@ -96,13 +96,14 @@ defmodule HTTPClient do
   """
   @impl HTTPClient.Behaviour
 
-  def request(%{options: options} = request) do
-    request =
-      HTTPoison.Request
-      |> struct(request) # convert into HTTPoison.Request struct
-      |> Map.merge(%{
-        options: Keyword.merge(@default_opts, options),
-      })
+  def request(%{method: method, url: url} = request) do
+    request = %HTTPoison.Request{
+      body: request[:body] || "",
+      headers: request[:headers] || [],
+      method: method,
+      options: Keyword.merge(@default_opts, request[:options] || []),
+      url: url,
+    }
 
     case @http_adapter.request(request) do
       {:ok, data} -> format_data(data)
