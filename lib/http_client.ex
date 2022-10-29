@@ -98,10 +98,10 @@ defmodule HTTPClient do
 
   def request(%{method: method, url: url} = request) do
     request = %HTTPoison.Request{
-      body: request[:body] || "",
-      headers: request[:headers] || [],
+      body: Map.get(request, :body, ""),
+      headers: Map.get(request, :headers, []),
       method: method,
-      options: Keyword.merge(@default_opts, request[:options] || []),
+      options: Keyword.merge(@default_opts, Map.get(request, :options, [])),
       url: url,
     }
 
