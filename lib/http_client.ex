@@ -98,7 +98,9 @@ defmodule HTTPClient do
 
   def request(%{options: options} = request) do
     request =
-      Map.merge(request, %{
+      HTTPoison.Request
+      |> struct(request) # convert into HTTPoison.Request struct
+      |> Map.merge(%{
         options: Keyword.merge(@default_opts, options),
       })
 
